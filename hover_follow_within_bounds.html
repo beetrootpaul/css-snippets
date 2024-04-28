@@ -1,0 +1,96 @@
+<!--
+
+Based on:
+- Kevin Powell's YouTube video "I never thought of using CSS animations like this before!"
+- https://www.youtube.com/watch?v=IdxzJLQ3Mbs
+- https://codepen.io/kevinpowell/pen/ExJebPz
+
+Notes:
+- we want an object to follow a cursor
+- but it has to happen only within some bounds
+- and we want it to go back to its initial position after the cursor goes outside the bounds
+
+-->
+
+<html lang="en">
+
+<style>
+    body {
+        background-color: dimgrey;
+
+        margin: 0;
+        height: 100svh;
+
+        display: grid;
+    }
+
+    .bounds {
+        display: grid;
+        margin: auto;
+
+        width: 256px;
+        aspect-ratio: 1;
+
+        background-color: grey;
+        border: 4px solid deepskyblue;
+
+        /* prevents the dot from going outside the bounds*/
+        overflow: hidden;
+    }
+
+    .bounds::before {
+        content: "";
+        display: block;
+        margin: auto;
+
+        width: 32px;
+        aspect-ratio: 1;
+
+        /* make it a circle */
+        border-radius: 50%;
+
+        background: orange;
+    }
+
+    .bounds::before {
+        animation: kf_exit 500ms forwards;
+    }
+
+    .bounds:hover::before {
+        animation: kf_enter 500ms forwards;
+    }
+
+    @keyframes kf_enter {
+        from {
+            translate: 0 0;
+        }
+        to {
+            translate: var(--x) var(--y);
+        }
+    }
+
+    @keyframes kf_exit {
+        from {
+            translate: var(--x) var(--y);
+        }
+        to {
+            translate: 0 0;
+        }
+    }
+</style>
+
+<div class="bounds"></div>
+
+<script>
+    const bounds = document.querySelector(".bounds");
+
+    bounds.addEventListener("mousemove", (event) => {
+        const x = event.offsetX - bounds.offsetWidth / 2;
+        const y = event.offsetY - bounds.offsetHeight / 2;
+
+        bounds.style.setProperty("--x", `${x}px`);
+        bounds.style.setProperty("--y", `${y}px`);
+    });
+</script>
+
+</html>
